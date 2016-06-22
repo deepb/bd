@@ -1,3 +1,6 @@
+bd Clone
+==
+
 Requisitos mínimos:
 - Debe haber una imagen de fondo.
 - 1 Jugador (Sprite) controlado por teclado.
