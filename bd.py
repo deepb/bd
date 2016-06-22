@@ -1,82 +1,120 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-file: bd.py $Date$
-version: $Id$
-    LICENCIA PÚBLICA PARA QUE HAGA LO QUE LE DÉ LA GANA
-                    Versión 2, diciembre de 2004
- 
- Derechos de autor (C) 2004 Sam Hocevar
-  14 rue de Plaisance, 75014 París, Francia
- Se permite la copia y distribución de forma literal o modificada
- copias de este documento de licencia, y su modificación están permitidas siempre
- que el se cambie el nombre.
- 
-            LICENCIA PÚBLICA PARA QUE HAGA LO QUE LE DÉ LA GANA
-   TÉRMINOS Y CONDICIONES PARA LA COPIA, DISTRIBUCIÓN & MODIFICACIÓN
- 
-  0. Eso sí, HAGA LO QUE LE DÉ LA GANA.
+file: bd.py $Id$
+date: $Date$
 """
+
+# Importar print como funcion
+from __future__ import print_function
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 import pygame
+from pygame.locals import *
 
 import sys
 
-# Importamos constantes locales de pygame
-from pygame.locals import *
+def main():
 
-# Creamos un reloj
-Reloj= pygame.time.Clock()
+    pygame.init()
 
-# Iniciamos Pygame
-pygame.init()
+    Reloj= pygame.time.Clock()
 
-# Creamos una surface (la ventana de juego), asignándole un alto y un ancho
-Ventana = pygame.display.set_mode((600, 400))
+    Ventana = pygame.display.set_mode((600, 400))
+    pygame.display.set_caption("bd Clone")
 
-# Le ponemos un título a la ventana
-pygame.display.set_caption("bd Clone")
+    Fondo = pygame.image.load("res/fondo.jpg")
 
-# Cargamos las imágenes
-Fondo = pygame.image.load("res/fondo.jpg")
-Imagen = pygame.image.load("res/sprite.png")
+    Imagen = pygame.image.load("res/sprite.png")
+    transparente = Imagen.get_at((0, 0))
+    Imagen.set_colorkey(transparente)
+    
+    hX = 100
+    hY = 100
+    hC = (hX, hY)
+    incX = 0
+    incY = 0
+    pos = 0
+    
+    Heroe = miSprite(hC, Imagen)
 
-coordX = 300
-coordY = 200
-Coordenadas = (coordX, coordY)
+    while True:
 
-incrementoX = 0
-incrementoY = 0
+        Ventana.blit(Fondo, (0, 0))
+        Ventana.blit(Heroe.image, Heroe.rect)
 
-# Bucle infinito para mantener el programa en ejecución
-while True:
+        pygame.display.flip()
 
-    Ventana.blit(Fondo, (0, 0))
-    Ventana.blit(Imagen, Coordenadas)    
-    pygame.display.flip()
-
-   # Manejador de eventos
-    for evento in pygame.event.get():
-        # Pulsación de la tecla escape
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_ESCAPE:
+        for evento in pygame.event.get():
+            if evento.type == pygame.KEYDOWN:
+                #key = pygame.key.get_pressed()
+                if evento.key == pygame.K_ESCAPE:
+                    sys.exit()
+                if evento.key == pygame.K_RIGHT:
+                    incX = 5
+                    pos = 4
+                if evento.key == pygame.K_DOWN:
+                    incY = 5
+                    pos = 1
+                if evento.key == pygame.K_LEFT:
+                    incX = -5
+                    pos = 3
+                if evento.key == pygame.K_UP:
+                    incY = -5
+                    pos = 2
+            if evento.type == pygame.KEYUP:
+                incX = 0
+                incY = 0
+                pos = 0
+            if evento.type == pygame.QUIT:
                 sys.exit()
-            elif evento.key == pygame.K_RIGHT:
-                incrementoX = 5
-            elif evento.key == pygame.K_DOWN:
-                incrementoY = 5
-            elif evento.key == pygame.K_LEFT:
-                incrementoX = -5
-            elif evento.key == pygame.K_UP:
-                incrementoY = -5
-        if evento.type == pygame.KEYUP:
-            incrementoX = 0
-            incrementoY = 0
-        if evento.type == pygame.QUIT:
-            sys.exit()
-    coordX = coordX + incrementoX
-    coordY = coordY + incrementoY
+        
+        hY += incY
+        hX += incX
+        hC = (hX, hY)
+        
+        Heroe.update(hC, pos)
+        Reloj.tick(30)
 
-    Coordenadas = (coordX, coordY)
 
-    # Asignamos un "tic" de 30 milisegundos
-    Reloj.tick(60)
+class miSprite(pygame.sprite.Sprite):
+
+    def __init__(self, coord, imagen):
+        #pygame.sprite.Sprite.__init__(self)
+
+        self.tile = imagen
+        self.arrayAnim = []
+        # _maxAnim es el numero de animaciones que tengo en la imagen
+        self._maxAnim = 6
+        # dir es la direccion: abajo,arriba,der,izq
+        for dir in range(4):
+            # anim es el numero de animaciones
+            for anim in range(self._maxAnim):
+                self.arrayAnim.append(self.tile.subsurface((anim*32,dir*64,32,64)))
+        self.anim = 0
+
+        self.actualizado = pygame.time.get_ticks()
+        self.image = self.arrayAnim[self.anim]
+        self.rect = self.image.get_rect()
+        self.rect.center = coord
+
+
+    def update(self, coord, dir):
+        self.rect.center = coord
+        if dir:
+            self.anim += 1
+            if self.anim > self._maxAnim:
+                self.anim = 1
+            pos = (dir - 1) * self._maxAnim
+            self.image = self.arrayAnim[(self.anim - 1) + pos]
+        self.actualizado = pygame.time.get_ticks()
+
+
+
+
+if __name__ == "__main__":
+    main()
+    
