@@ -17,34 +17,45 @@ from pygame.locals import *
 
 import sys
 
+WIDTH = 600
+HEIGHT = 400
+WINDOW = (WIDTH, HEIGHT)
+
 def main():
 
     pygame.init()
 
     Reloj= pygame.time.Clock()
 
-    Ventana = pygame.display.set_mode((600, 400))
+    Ventana = pygame.display.set_mode(WINDOW)
     pygame.display.set_caption("bd Clone")
 
     Fondo = pygame.image.load("res/fondo.jpg")
 
-    Imagen = pygame.image.load("res/sprite.png")
-    transparente = Imagen.get_at((0, 0))
-    Imagen.set_colorkey(transparente)
+    imgHeroe = pygame.image.load("res/sprite.png")
+    imgArena = pygame.image.load("res/desert.png")
     
-    hX = 100
-    hY = 100
+    #trans = imgHeroe.get_at((0, 0))
+    #Imagen.set_colorkey(trans)
+    
+    hX = 300
+    hY = 300
     hC = (hX, hY)
     incX = 0
     incY = 0
     pos = 0
     
-    Heroe = miSprite(hC, Imagen)
+    Heroe = miSprite(hC, imgHeroe, 6)
+    arrayArena = []
+    for i in range(5):
+        arrayArena.append(miSprite((i*128 + 32, 200), imgArena, 1, 32, 32))
 
     while True:
 
         Ventana.blit(Fondo, (0, 0))
         Ventana.blit(Heroe.image, Heroe.rect)
+        for i in range(5):
+            Ventana.blit(arrayArena[i].image, arrayArena[i].rect)
 
         pygame.display.flip()
 
@@ -53,16 +64,16 @@ def main():
                 #key = pygame.key.get_pressed()
                 if evento.key == pygame.K_ESCAPE:
                     sys.exit()
-                if evento.key == pygame.K_RIGHT:
+                elif evento.key == pygame.K_RIGHT:
                     incX = 5
                     pos = 4
-                if evento.key == pygame.K_DOWN:
+                elif evento.key == pygame.K_DOWN:
                     incY = 5
                     pos = 1
-                if evento.key == pygame.K_LEFT:
+                elif evento.key == pygame.K_LEFT:
                     incX = -5
                     pos = 3
-                if evento.key == pygame.K_UP:
+                elif evento.key == pygame.K_UP:
                     incY = -5
                     pos = 2
             if evento.type == pygame.KEYUP:
@@ -82,18 +93,22 @@ def main():
 
 class miSprite(pygame.sprite.Sprite):
 
-    def __init__(self, coord, imagen):
+    def __init__(self, coord, imagen, animaciones=6, width=32, height=64):
         #pygame.sprite.Sprite.__init__(self)
 
         self.tile = imagen
+        self._width = width
+        self._height = height
         self.arrayAnim = []
         # _maxAnim es el numero de animaciones que tengo en la imagen
-        self._maxAnim = 6
+        self._maxAnim = animaciones
         # dir es la direccion: abajo,arriba,der,izq
         for dir in range(4):
             # anim es el numero de animaciones
             for anim in range(self._maxAnim):
-                self.arrayAnim.append(self.tile.subsurface((anim*32,dir*64,32,64)))
+                self.arrayAnim.append(self.tile.subsurface(\
+                    (anim*self._width, dir*self._height, \
+                    self._width, self._height)))
         self.anim = 0
 
         self.actualizado = pygame.time.get_ticks()
