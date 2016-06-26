@@ -32,7 +32,7 @@ RES_TILES = RES + "/tiles"
 RES_SOUND = RES + "/sounds"
 RES_BG = RES + "/bg"
 
-MAX_FIRE = 4
+MAX_FIRE = 10
 
 RELOJ_TICKS = 30
 RANDOM_SPEED = 10
@@ -119,8 +119,8 @@ class miSpriteRandom(miSprite):
         return coord
 
     def randomVel(self):
-        self.vx = random.randrange(-RELOJ_TICKS, RELOJ_TICKS)
-        self.vy = random.randrange(-RELOJ_TICKS, RELOJ_TICKS)
+        self.vx = random.randrange(-RANDOM_SPEED, RANDOM_SPEED)
+        self.vy = random.randrange(-RANDOM_SPEED, RANDOM_SPEED)
 
 def main():
     
@@ -133,23 +133,29 @@ def main():
         Ventana = gm.display.set_mode(VENTANA)
         gm.display.set_caption("bd Clone")
         
+        Status = gm.font.Font(None, 30)
+        
         Fondo = gm.image.load(RES_BG + "/fondo.jpg")
         
         imgHeroe = gm.image.load(RES_TILES + "/sprite.png")
         imgFire = gm.image.load(RES_TILES + "/fire.png")
         imgExit = gm.image.load(RES_TILES + "/exit.png")
         Heroe = miSprite((ANCHO//2, ALTO//2), imgHeroe, 6)
-        Exit = miSpriteRandom((ANCHO - 32, ALTO - 32), imgExit)
+        Exit = miSpriteRandom(\
+            (random.randrange(0, ANCHO), random.randrange(0, ALTO)),\
+            imgExit)
         Exit.randomVel()
         aFire = []
 
         for i in range(MAX_FIRE):
-            aFire.append(miSpriteRandom((i*128 + 32, 100), imgFire))
+            aFire.append(miSpriteRandom(\
+                (random.randrange(0, ANCHO), random.randrange(0, ALTO)),\
+                imgFire))
             aFire[i].randomVel()
         
         
     def newGame():
-        global Reloj, Ventana, Fondo, Heroe, Exit, aFire, Status
+        global Reloj, Ventana, Fondo, Heroe, Exit, aFire, Status, puntos
 
         hX = 300
         hY = 300
@@ -158,6 +164,8 @@ def main():
         incY = 0
         pos = 0        
         
+        puntos = 200
+        
         while True:
         
             Ventana.blit(Fondo, (0, 0))
@@ -165,6 +173,9 @@ def main():
             for i in range(MAX_FIRE):
                 Ventana.blit(aFire[i].image, aFire[i].rect)
             Ventana.blit(Exit.image, Exit.rect)
+
+            st = Status.render("Puntos: "+ str(puntos), 0, (0, 255, 255))
+            Ventana.blit(st, (0, 0))
             
             gm.display.flip()
         
@@ -212,7 +223,7 @@ def main():
                 aC = aFire[i].checkRandom([aX, aY])
                 aFire[i].update(aC)
                 if gm.sprite.collide_mask(aFire[i], Heroe):
-                    return gameover()
+                    ouch()
             aC = Exit.rect.center
             aX = aC[0] + Exit.vx
             aY = aC[1] + Exit.vy
@@ -221,6 +232,9 @@ def main():
             if gm.sprite.collide_mask(Exit, Heroe):
                 return game()
 
+            puntos -= 1
+            if puntos < 0:
+                return gameover()
             Reloj.tick(30)
 
     def game():
@@ -236,18 +250,22 @@ def main():
         gm.display.flip()
         return False
     
-    def gameover():
-        global Ventana
+    def ouch():
+        global puntos
         colisionSound = gm.mixer.Sound(RES_SOUND + "/ouch.wav")
         colisionSound.set_volume(0.5)
         if not gm.mixer.get_busy():
             colisionSound.play()
-            
+        puntos -= 10
+        return True
+    
+    def gameover():
+        global Ventana
+
         font = gm.font.Font(None, 40)
-        go = font.render("Game Over!", 1, (0, 255, 255))
+        go = font.render("Game Over!", 1, (128, 0, 0))
         Ventana.blit(go, (ALTO//2, ANCHO//2))
         gm.display.flip()
-        
         return True
     
     def getName():
@@ -266,8 +284,7 @@ def main():
                 name = getName()
                 getTop()
         if evento.type == gm.QUIT:
-            sys.exit()
-        Reloj.tick(RELOJ_TICKS)        
+            sys.exit()      
         
 if __name__ == "__main__":
     main()
