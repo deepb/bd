@@ -1,6 +1,10 @@
 bd Clone
 ==
 
+¡Intenta escapar del fuego!
+Hay una salida cerca, si puedes alcanzarla.
+
+
 Requisitos mínimos:
 - Debe haber una imagen de fondo.
 - 1 Jugador (Sprite) controlado por teclado.
@@ -18,7 +22,7 @@ Requisitos OPCIONALES:
 - Solicitar un nombre de usuario, para mostrarlo en ranking junto a su puntuación.
 
 Sobre la evaluación
-============================================
+==
 
 Si se usan varios ficheros, imágenes... el proyecto debe entregarse en un fichero comprimido con un formato libre. 
 Si el proyecto no se ejecuta o lanza errores al ejecutarse, la calificación no será superior a 50 puntos sobre 100.

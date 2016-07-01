@@ -8,24 +8,16 @@ date: $Date$
 # Importar print como funcion
 from __future__ import print_function
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-
 import pygame as gm
 from pygame.locals import *
-try:
-    import pygame.freetype as Font
-except ImportError as err:
-    print("Aviso: No funciona freetype")
 
 import sys
-import time
 import random
 
 ANCHO = 640
 ALTO = 480
 VENTANA = [ANCHO, ALTO]
+FULLSCREEN = False
 
 RES = "res"
 RES_TILES = RES + "/tiles"
@@ -37,10 +29,11 @@ MAX_FIRE = 10
 RELOJ_TICKS = 30
 RANDOM_SPEED = 10
 
+POINTS = 200
+
 class miSprite(gm.sprite.Sprite):
 
     def __init__(self, coord, imagen, animaciones=6, ancho=32, alto=64):
-        #gm.sprite.Sprite.__init__(self)
 
         self.tile = imagen
         self._ancho = ancho
@@ -122,67 +115,69 @@ class miSpriteRandom(miSprite):
         self.vx = random.randrange(-RANDOM_SPEED, RANDOM_SPEED)
         self.vy = random.randrange(-RANDOM_SPEED, RANDOM_SPEED)
 
-def main():
+class Juego():
     
-    def init():
-        global Reloj, Ventana, Fondo, Heroe, Exit, aFire, Status
-
-        gm.init()
-        Reloj= gm.time.Clock()
+    def __init__(self):
+        self.init()
+        if FULLSCREEN:
+            self.Ventana = gm.display.set_mode(VENTANA, gm.FULLSCREEN)
+        else:
+            self.Ventana = gm.display.set_mode(VENTANA)
         
-        Ventana = gm.display.set_mode(VENTANA)
-        gm.display.set_caption("bd Clone")
+    def init(self):
+        self.Reloj= gm.time.Clock()
         
-        Status = gm.font.Font(None, 30)
+        self.puntosFont = gm.font.Font(None, 30)
         
-        Fondo = gm.image.load(RES_BG + "/fondo.jpg")
+        self.Fondo = gm.image.load(RES_BG + "/fondo.jpg")
         
         imgHeroe = gm.image.load(RES_TILES + "/sprite.png")
         imgFire = gm.image.load(RES_TILES + "/fire.png")
         imgExit = gm.image.load(RES_TILES + "/exit.png")
-        Heroe = miSprite((ANCHO//2, ALTO//2), imgHeroe, 6)
-        Exit = miSpriteRandom(\
+        self.Heroe = miSprite((ANCHO//2, ALTO//2), imgHeroe, 6)
+        self.Exit = miSpriteRandom(\
             (random.randrange(0, ANCHO), random.randrange(0, ALTO)),\
             imgExit)
-        Exit.randomVel()
-        aFire = []
+        self.Exit.randomVel()
+        self.aFire = []
 
         for i in range(MAX_FIRE):
-            aFire.append(miSpriteRandom(\
+            self.aFire.append(miSpriteRandom(\
                 (random.randrange(0, ANCHO), random.randrange(0, ALTO)),\
                 imgFire))
-            aFire[i].randomVel()
+            self.aFire[i].randomVel()
+        self.puntos = POINTS
+        self.game = True
         
+    def newGame(self, game=True):
+        global FULLSCREEN
         
-    def newGame():
-        global Reloj, Ventana, Fondo, Heroe, Exit, aFire, Status, puntos
-
-        hX = 300
-        hY = 300
+        hX = VENTANA[0]//2
+        hY = VENTANA[1]//2
         hC = [hX, hY]
         incX = 0
         incY = 0
         pos = 0        
         
-        puntos = 200
+        self.puntos = POINTS
+        self.game = game
         
-        while True:
-        
-            Ventana.blit(Fondo, (0, 0))
-            Ventana.blit(Heroe.image, Heroe.rect)
+        while self.game:
+            self.Ventana.blit(self.Fondo, (0, 0))
+            self.Ventana.blit(self.Heroe.image, self.Heroe.rect)
             for i in range(MAX_FIRE):
-                Ventana.blit(aFire[i].image, aFire[i].rect)
-            Ventana.blit(Exit.image, Exit.rect)
+                self.Ventana.blit(self.aFire[i].image, self.aFire[i].rect)
+            self.Ventana.blit(self.Exit.image, self.Exit.rect)
 
-            st = Status.render("Puntos: "+ str(puntos), 0, (0, 255, 255))
-            Ventana.blit(st, (0, 0))
+            pf = self.puntosFont.render("Puntos: "+ str(self.puntos), 0, (0, 255, 255))
+            self.Ventana.blit(pf, (VENTANA[0]-150, 0))
             
             gm.display.flip()
         
             for evento in gm.event.get():
                 if evento.type == gm.KEYDOWN:
-                    #key = pygame.key.get_pressed()
                     if evento.key == gm.K_ESCAPE:
+                        self.game = False
                         sys.exit()
                     elif evento.key == gm.K_RIGHT or\
                         evento.key == gm.K_d:
@@ -204,89 +199,115 @@ def main():
                         incX = 0
                         incY = -5
                         pos = 2
+                    elif evento.key == gm.K_f:
+                        FULLSCREEN = not FULLSCREEN
+                        gm.display.toggle_fullscreen()
                 if evento.type == gm.KEYUP:
                     incX = 0
                     incY = 0
                     pos = 0
                 if evento.type == gm.QUIT:
+                    self.game = False
                     sys.exit()
             
             hY += incY
             hX += incX
-            hC = Heroe.checkCoord([hX, hY])
+            hC = self.Heroe.checkCoord([hX, hY])
             [hX, hY] = hC
-            Heroe.update(hC, pos)
+            self.Heroe.update(hC, pos)
             for i in range(MAX_FIRE):
-                aC = aFire[i].rect.center
-                aX = aC[0] + aFire[i].vx
-                aY = aC[1] + aFire[i].vy
-                aC = aFire[i].checkRandom([aX, aY])
-                aFire[i].update(aC)
-                if gm.sprite.collide_mask(aFire[i], Heroe):
-                    ouch()
-            aC = Exit.rect.center
-            aX = aC[0] + Exit.vx
-            aY = aC[1] + Exit.vy
-            aC = Exit.checkRandom([aX, aY])
-            Exit.update(aC)
-            if gm.sprite.collide_mask(Exit, Heroe):
-                return game()
+                aC = self.aFire[i].rect.center
+                aX = aC[0] + self.aFire[i].vx
+                aY = aC[1] + self.aFire[i].vy
+                aC = self.aFire[i].checkRandom([aX, aY])
+                self.aFire[i].update(aC)
+                if gm.sprite.collide_mask(self.aFire[i], self.Heroe):
+                    self.ouch()
+            aC = self.Exit.rect.center
+            aX = aC[0] + self.Exit.vx
+            aY = aC[1] + self.Exit.vy
+            aC = self.Exit.checkRandom([aX, aY])
+            self.Exit.update(aC)
+            if gm.sprite.collide_mask(self.Exit, self.Heroe):
+                return self.onExit()
 
-            puntos -= 1
-            if puntos < 0:
-                return gameover()
-            Reloj.tick(30)
-
-    def game():
-        global Ventana
+            self.puntos -= 1
+            if self.puntos < 0:
+                return self.gameover()
+            self.tick()
+            
+    def tick(self):
+        self.Reloj.tick(30)
+        
+    def onExit(self):
         colisionSound = gm.mixer.Sound(RES_SOUND + "/guitarra.wav")
         colisionSound.set_volume(0.5)
         if not gm.mixer.get_busy():
             colisionSound.play()
-            
-        font = gm.font.Font(None, 40)
-        go = font.render("Has salido!", 1, (0, 255, 255))
-        Ventana.blit(go, (ALTO//2, ANCHO//2))
-        gm.display.flip()
+        self.statusFont("Has salido!", (0, 255, 255), (ANCHO//2-50, ALTO//2))
+        self.game = False
         return False
     
-    def ouch():
-        global puntos
+    def ouch(self):
         colisionSound = gm.mixer.Sound(RES_SOUND + "/ouch.wav")
         colisionSound.set_volume(0.5)
         if not gm.mixer.get_busy():
             colisionSound.play()
-        puntos -= 10
+        self.puntos -= POINTS//20
         return True
     
-    def gameover():
-        global Ventana
-
+    def gameover(self):
+        self.statusFont("Game Over!", (128, 0, 0), (ANCHO//2-50, ALTO//2))
+        self.game = False
+        return True
+    
+    def statusFont(self, text="", color=(0, 255, 255), pos=(ALTO//2, ANCHO//2)):
         font = gm.font.Font(None, 40)
-        go = font.render("Game Over!", 1, (128, 0, 0))
-        Ventana.blit(go, (ALTO//2, ANCHO//2))
+        f = font.render(text, 0, color)
+        self.Ventana.blit(f, pos)
         gm.display.flip()
-        return True
-    
-    def getName():
+
+    def getName(self):
         return "AAA"
     
-    def getTop():
+    def getTop(self):
         print("TOP")
-    
 
-    while True:
-        init()
-        evento = gm.event.wait()
-        if evento.type == gm.KEYDOWN:
-            ret = newGame()
-            if ret:
-                name = getName()
-                getTop()
-        if evento.type == gm.QUIT:
-            sys.exit()      
-        
-if __name__ == "__main__":
-    main()
+    def menu(self):
+        self.Ventana.blit(self.Fondo, (0, 0))
+        while True:
+            self.statusFont("Pulsa cualquier tecla", (0, 255, 255), (ALTO//2-50, ANCHO//2))
+            gm.display.flip()
+            self.tick()
+            evento = gm.event.wait()
+            if evento.type == gm.KEYDOWN:
+                self.init()
+                ret = self.newGame()
+                if not ret:
+                    name = self.getName()
+                    print(name)
+                self.getTop()
+            if evento.type == gm.QUIT:
+                sys.exit()      
+
+class Ventana():
     
+    def __init__(self):
+
+        gm.init()
+        gm.display.set_mode(VENTANA)
+        gm.display.set_caption("bd Clone")
+        
+    def flip(self):
+        gm.display.flip()
+
+
+def main():
+    Ventana()
+    juego = Juego()
+    juego.menu()
+    
+if __name__ == "__main__":
+    ret = main()
+    sys.exit(ret)
     
