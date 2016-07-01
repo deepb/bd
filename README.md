@@ -2,8 +2,9 @@ bd Clone
 ==
 
 ¡Intenta escapar del fuego!
-Hay una salida cerca, si puedes alcanzarla.
 
+Hay una salida cerca, si puedes alcanzarla.
+Si te quemas, reduce la posibilidad de alcanzar la salida.
 
 Requisitos mínimos:
 - Debe haber una imagen de fondo.
