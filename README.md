@@ -4,7 +4,7 @@ bd Clone
 ¡Intenta escapar del fuego!
 
 Hay una salida cerca, si puedes alcanzarla.
-Si te quemas, reduce la posibilidad de alcanzar la salida.
+Si te quemas, reduces la posibilidad de alcanzar la salida.
 
 TAREA
 ==
