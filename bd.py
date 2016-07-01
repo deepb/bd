@@ -279,7 +279,7 @@ class Juego():
         for top in self.top:
             if len(top):
                 print(top)
-
+    
     def menu(self):
         self.Ventana.blit(self.Fondo, (0, 0))
         while True:
