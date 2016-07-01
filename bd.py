@@ -170,7 +170,7 @@ class Juego():
                 self.Ventana.blit(self.aFire[i].image, self.aFire[i].rect)
             self.Ventana.blit(self.Exit.image, self.Exit.rect)
 
-            pf = self.puntosFont.render("Puntos: "+ str(self.puntos), 0, (0, 255, 255))
+            pf = self.puntosFont.render("Puntos: "+ str(self.puntos), 1, (0, 255, 255))
             self.Ventana.blit(pf, (VENTANA[0]-150, 0))
             
             gm.display.flip()
@@ -200,9 +200,9 @@ class Juego():
                         incX = 0
                         incY = -5
                         pos = 2
-                    elif evento.key == gm.K_f:
-                        FULLSCREEN = not FULLSCREEN
-                        gm.display.toggle_fullscreen()
+#                    elif evento.key == gm.K_f:
+#                        FULLSCREEN = not FULLSCREEN
+#                        gm.display.toggle_fullscreen()
                 if evento.type == gm.KEYUP:
                     incX = 0
                     incY = 0
@@ -241,22 +241,22 @@ class Juego():
         self.Reloj.tick(30)
         
     def onExit(self):
-        colisionSound = gm.mixer.Sound(RES_SOUND + "/guitarra.wav")
-        colisionSound.set_volume(0.5)
-        if not gm.mixer.get_busy():
-            colisionSound.play()
+        self.play("guitarra.wav")
         self.statusFont("Has salido!", (0, 255, 255), (ANCHO//2-50, ALTO//2))
         self.game = False
         return False
     
     def ouch(self):
-        colisionSound = gm.mixer.Sound(RES_SOUND + "/ouch.wav")
-        colisionSound.set_volume(0.5)
-        if not gm.mixer.get_busy():
-            colisionSound.play()
+        self.play("ouch.wav")
         self.puntos -= POINTS//20
         return True
     
+    def play(self, tune):
+        colisionSound = gm.mixer.Sound(RES_SOUND + "/" + tune)
+        colisionSound.set_volume(0.5)
+        if not gm.mixer.get_busy():
+            colisionSound.play()
+
     def gameover(self):
         self.statusFont("Game Over!", (128, 0, 0), (ANCHO//2-50, ALTO//2))
         self.game = False
@@ -264,7 +264,7 @@ class Juego():
     
     def statusFont(self, text="", color=(0, 255, 255), pos=(ALTO//2, ANCHO//2)):
         font = gm.font.Font(None, 40)
-        f = font.render(text, 0, color)
+        f = font.render(text, 1, color)
         self.Ventana.blit(f, pos)
         gm.display.flip()
 
@@ -283,7 +283,8 @@ class Juego():
     def menu(self):
         self.Ventana.blit(self.Fondo, (0, 0))
         while True:
-            self.statusFont("Pulsa cualquier tecla", (0, 255, 255), (ALTO//2-50, ANCHO//2))
+            self.statusFont("Pulsa cualquier tecla", \
+                (0, 255, 255), (ALTO//2-50, ANCHO//2))
             gm.display.flip()
             self.tick()
             evento = gm.event.wait()
