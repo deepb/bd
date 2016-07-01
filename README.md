@@ -6,6 +6,11 @@ bd Clone
 Hay una salida cerca, si puedes alcanzarla.
 Si te quemas, reduce la posibilidad de alcanzar la salida.
 
+TAREA
+==
+
+Da rienda suelta a tu imaginación
+
 Requisitos mínimos:
 - Debe haber una imagen de fondo.
 - 1 Jugador (Sprite) controlado por teclado.
