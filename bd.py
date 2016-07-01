@@ -24,7 +24,7 @@ RES_TILES = RES + "/tiles"
 RES_SOUND = RES + "/sounds"
 RES_BG = RES + "/bg"
 
-MAX_FIRE = 10
+MAX_FIRE = 4
 
 RELOJ_TICKS = 30
 RANDOM_SPEED = 10
@@ -123,6 +123,7 @@ class Juego():
             self.Ventana = gm.display.set_mode(VENTANA, gm.FULLSCREEN)
         else:
             self.Ventana = gm.display.set_mode(VENTANA)
+        self.top = []
         
     def init(self):
         self.Reloj= gm.time.Clock()
@@ -268,10 +269,16 @@ class Juego():
         gm.display.flip()
 
     def getName(self):
-        return "AAA"
+        name = raw_input("Nombre: ")
+        return name
     
     def getTop(self):
-        print("TOP")
+        print("="*20)
+        print("Jugador\tPuntos")
+        print("="*20)
+        for top in self.top:
+            if len(top):
+                print(top)
 
     def menu(self):
         self.Ventana.blit(self.Fondo, (0, 0))
@@ -285,7 +292,7 @@ class Juego():
                 ret = self.newGame()
                 if not ret:
                     name = self.getName()
-                    print(name)
+                    self.top.append(str(name) + "\t" + str(self.puntos))
                 self.getTop()
             if evento.type == gm.QUIT:
                 sys.exit()      
