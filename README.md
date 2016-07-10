@@ -17,7 +17,7 @@ Ejecuta:
 
 En la consola de mysql teclea:
 
-	CREATE DATABASE BD;
+	_CREATE DATABASE BD;_
 	GRANT ALL ON BD.* TO 'BD'@'localhost' IDENTIFIED BY 'BD';
 	CREATE TABLE Top (
 		id INT NOT NULL AUTO_INCREMENT, 
