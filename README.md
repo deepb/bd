@@ -9,7 +9,7 @@ Si te quemas, reduces la posibilidad de alcanzar la salida.
 INSTALACION
 --
 
-Instala _mysqld_
+Instala _mysqld_ 
 
 Ejecuta:
 
@@ -28,8 +28,13 @@ En la consola de mysql teclea:
 	);
 	QUIT;
 
+Instala MySQLdb:
+	
+	# Por ejemplo en Arch Linux:
+	sudo pip2 install MySQL-python
+		
+Ejecuta _bd.py_ con Python 2.x:
 
-Ejecuta:
-
+	# Por ejemplo en Arch Linux:
 	python2 bd.py
 	
