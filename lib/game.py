@@ -5,9 +5,6 @@ file: game.py $Id$
 date: $Date$
 """
 
-# Importar print como funcion
-from __future__ import print_function
-
 import pygame as gm
 from pygame.locals import *
 
