@@ -1,0 +1,18 @@
+# Crear base de datos
+CREATE DATABASE BD;
+GRANT ALL ON BD.* TO 'BD'@'localhost' IDENTIFIED BY 'BD';
+USE BD;
+CREATE TABLE Top (
+	id INT NOT NULL AUTO_INCREMENT, 
+	Nombre VARCHAR(5) NOT NULL, 
+	Puntos INT NOT NULL, 
+	TimeStamp DATETIME NOT NULL DEFAULT NOW(),
+	PRIMARY KEY (id)
+	);
+
+
+# Seleccionar Top 5
+SELECT Nombre, Puntos FROM Top ORDER BY Puntos DESC LIMIT 5;
+
+# Insertar
+INSERT INTO Top (Nombre, Puntos) VALUES ('Play1', 1);
