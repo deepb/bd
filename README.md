@@ -32,7 +32,16 @@ Instala MySQLdb:
 	
 	# Por ejemplo en Arch Linux:
 	sudo pip2 install MySQL-python
-		
+	# o
+	sudo pacman -S mysql-python
+
+Instala _Pygame_:
+	
+	# Por ejemplo, en Arch Linux:
+	sudo pip2 install pygame
+	# o
+	sudo pacman -S python2-pygame
+
 Ejecuta _bd.py_ con Python 2.x:
 
 	# Por ejemplo en Arch Linux:
