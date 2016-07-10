@@ -18,23 +18,14 @@ Ejecuta:
 En la consola de mysql teclea:
 
 	CREATE DATABASE BD;
-
 	GRANT ALL ON BD.* TO 'BD'@'localhost' IDENTIFIED BY 'BD';
-
 	CREATE TABLE Top (
-
 		id INT NOT NULL AUTO_INCREMENT, 
-
 		Nombre VARCHAR(5) NOT NULL, 
-
 		Puntos INT NOT NULL, 
-
 		TimeStamp DATETIME NOT NULL DEFAULT NOW(),
-
 		PRIMARY KEY (id)
-
 	);
-
 	QUIT;
 
 
