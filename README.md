@@ -28,9 +28,9 @@ En la consola de mysql teclea:
 	);
 	QUIT;
 
-Instala MySQLdb:
+Instala _MySQLdb_:
 	
-	# Por ejemplo en Arch Linux:
+	# Por ejemplo, en Arch Linux:
 	sudo pip2 install MySQL-python
 	# o
 	sudo pacman -S mysql-python
@@ -44,6 +44,6 @@ Instala _Pygame_:
 
 Ejecuta _bd.py_ con Python 2.x:
 
-	# Por ejemplo en Arch Linux:
+	# Por ejemplo, en Arch Linux:
 	python2 bd.py
 	
