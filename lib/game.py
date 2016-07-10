@@ -29,35 +29,36 @@ class Juego():
         #self.DB.truncateDB()
         
     def init(self, *args):
+        # Reloj
         self.Reloj= gm.time.Clock()
-        
+        # Fuente Puntos
         self.puntosFont = gm.font.Font(None, 30)
-        
+        # Fondo y Titulo
         self.Fondo = gm.image.load(RES_BG + "/fondo.jpg")
         self.BD = gm.image.load(RES_BG + "/bd.png")
-        
+        # Sprites
         imgHeroe = gm.image.load(RES_TILES + "/sprite.png")
         imgFire = gm.image.load(RES_TILES + "/fire.png")
         imgExit = gm.image.load(RES_TILES + "/exit.png")
-
+        # Heroe Sprite
         self.Heroe = miSprite((ANCHO//2, ALTO//2), imgHeroe, 6)
+        # Exit Sprite
         self.Exit = miSpriteRandom(\
             (random.randrange(0, ANCHO), random.randrange(0, ALTO)),\
             imgExit)
         self.Exit.randomVel()
+        # Fuego Sprite
         self.aFire = []
-
         for i in range(MAX_FIRE):
             self.aFire.append(miSpriteRandom(\
                 (random.randrange(0, ANCHO), random.randrange(0, ALTO)),\
                 imgFire))
             self.aFire[i].randomVel()
+        # Marcadores
         self.puntos = POINTS
         self.game = True
         
     def newGame(self, game=True):
-        global FULLSCREEN
-        
         hX = VENTANA[0]//2
         hY = VENTANA[1]//2
         hC = [hX, hY]
@@ -106,7 +107,6 @@ class Juego():
                         incY = -5
                         pos = 2
                     elif evento.key == gm.K_f:
-                        FULLSCREEN = not FULLSCREEN
                         gm.display.toggle_fullscreen()
                 if evento.type == gm.KEYUP:
                     incX = 0
@@ -167,7 +167,6 @@ class Juego():
         return True
     
     def blur(self, fondo, cont=50.0):
-
         if cont < 1.0:
             cont = 1.0
         escala = 1.0/float(cont)
@@ -290,13 +289,14 @@ class Juego():
                     self.Ventana.blit(self.BD, (130, 20))
                     self.DB.addTop(name, self.puntos)
                 self.getTop()
+                if evento.key == gm.K_f:
+                    gm.display.toggle_fullscreen()
             if evento.type == gm.QUIT:
                 sys.exit()      
 
 class Ventana():
     
     def __init__(self):
-
         gm.init()
         gm.display.set_mode(VENTANA)
         gm.display.set_caption("bd Clone")

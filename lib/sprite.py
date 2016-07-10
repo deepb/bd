@@ -14,7 +14,6 @@ from locals import *
 class miSprite(gm.sprite.Sprite):
 
     def __init__(self, coord, imagen, animaciones=6, ancho=32, alto=64):
-
         self.tile = imagen
         self._ancho = ancho
         self._alto = alto
@@ -50,7 +49,6 @@ class miSprite(gm.sprite.Sprite):
         elif coord[1] > ALTO - self._alto/2:
             coord[1] = ALTO - self._alto/2
             self.anim = 0
-        
         return coord
         
     def update(self, coord, dir=0):
@@ -87,7 +85,6 @@ class miSpriteRandom(miSprite):
         elif coord[1] > ALTO - self._alto/2:
             coord[1] = ALTO - self._alto/2
             self.vy = - self.vy 
-        
         return coord
 
     def randomVel(self):
