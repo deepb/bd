@@ -12,7 +12,7 @@ from lib.game import Juego, Ventana
 def main():
     Ventana()
     juego = Juego()
-    juego.menu()
+    return juego.menu()
     
 if __name__ == "__main__":
     ret = main()

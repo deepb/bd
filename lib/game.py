@@ -26,7 +26,7 @@ class Juego():
             self.Ventana = gm.display.set_mode(VENTANA)
         self.DB = miDB()
         # DEBUG
-        #self.DB.truncateDB()
+        self.DB.truncateDB()
         
     def init(self, *args):
         # Reloj
@@ -281,16 +281,19 @@ class Juego():
             self.tick()
             evento = gm.event.wait()
             if evento.type == gm.KEYDOWN:
-                self.init()
-                ret = self.newGame()
-                if not ret:
-                    name = self.getName()
-                    self.Ventana.blit(self.blur(self.Fondo, 10.0), (0, 0))
-                    self.Ventana.blit(self.BD, (130, 20))
-                    self.DB.addTop(name, self.puntos)
-                self.getTop()
-                if evento.key == gm.K_f:
+                if evento.key == gm.K_ESCAPE:
+                    sys.exit()
+                elif evento.key == gm.K_f:
                     gm.display.toggle_fullscreen()
+                else:
+                    self.init()
+                    ret = self.newGame()
+                    if not ret:
+                        name = self.getName()
+                        self.Ventana.blit(self.blur(self.Fondo, 10.0), (0, 0))
+                        self.Ventana.blit(self.BD, (130, 20))
+                        self.DB.addTop(name, self.puntos)
+                self.getTop()
             if evento.type == gm.QUIT:
                 sys.exit()      
 
@@ -298,7 +301,7 @@ class Ventana():
     
     def __init__(self):
         gm.init()
-        gm.display.set_mode(VENTANA)
+        #gm.display.set_mode(VENTANA)
         gm.display.set_caption("bd Clone")
         
     def flip(self):
