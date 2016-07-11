@@ -26,7 +26,7 @@ class Juego():
             self.Ventana = gm.display.set_mode(VENTANA)
         self.DB = miDB()
         # DEBUG
-        self.DB.truncateDB()
+        #self.DB.truncateDB()
         
     def init(self, *args):
         # Reloj
