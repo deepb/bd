@@ -92,8 +92,6 @@ class miDB():
                     ORDER BY Puntos DESC LIMIT %d;" % limit
             data = self.talkDB(query, True)
             return data
-        else:
-            print("No hay base de datos. Comprueba la conexion.")
     
     def addTop(self, player, points, *args):
         if self.getDB() is not None:

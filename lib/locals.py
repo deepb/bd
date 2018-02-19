@@ -20,7 +20,7 @@ RES_BG = RES + "/bg"
 # Numero de fuegos maximos
 MAX_FIRE = 20
 
-#
+# Ajustes
 RELOJ_TICKS = 30
 RANDOM_SPEED = 10
 

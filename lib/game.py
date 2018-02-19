@@ -198,79 +198,34 @@ class Juego():
             if evento.type == gm.KEYDOWN:
                 if evento.key == gm.K_ESCAPE:
                     name = "AAAAA"
-                elif evento.key == gm.K_a:
-                    name += 'A'
-                elif evento.key == gm.K_b:
-                    name += 'B'
-                elif evento.key == gm.K_c:
-                    name += 'C'
-                elif evento.key == gm.K_d:
-                    name += 'D'
-                elif evento.key == gm.K_e:
-                    name += 'E'
-                elif evento.key == gm.K_f:
-                    name += 'F'
-                elif evento.key == gm.K_g:
-                    name += 'G'
-                elif evento.key == gm.K_h:
-                    name += 'H'
-                elif evento.key == gm.K_i:
-                    name += 'I'
-                elif evento.key == gm.K_j:
-                    name += 'J'
-                elif evento.key == gm.K_k:
-                    name += 'K'
-                elif evento.key == gm.K_l:
-                    name += 'L'
-                elif evento.key == gm.K_m:
-                    name += 'M'
-                elif evento.key == gm.K_n:
-                    name += 'N'
-                elif evento.key == gm.K_o:
-                    name += 'O'
-                elif evento.key == gm.K_p:
-                    name += 'P'
-                elif evento.key == gm.K_q:
-                    name += 'Q'
-                elif evento.key == gm.K_r:
-                    name += 'R'
-                elif evento.key == gm.K_s:
-                    name += 'S'
-                elif evento.key == gm.K_t:
-                    name += 'T'
-                elif evento.key == gm.K_u:
-                    name += 'U'
-                elif evento.key == gm.K_v:
-                    name += 'V'
-                elif evento.key == gm.K_w:
-                    name += 'W'
-                elif evento.key == gm.K_x:
-                    name += 'X'
-                elif evento.key == gm.K_y:
-                    name += 'Y'
-                elif evento.key == gm.K_z:
-                    name += 'Z'
                 elif evento.key == gm.K_BACKSPACE:
                     name = name[:-1]
                 elif evento.key == gm.K_RETURN:
                     name += ' '*5 
+                else:
+                    try:
+                        name += chr(evento.key)
+                    except ValueError:
+                        pass
             self.printName(name)
         return name
     
     def getTop(self):
         top = self.DB.getTop()
+        if top is None:
+            return False
+        else:
+            self.statusFont("Nombre      Puntos", (0, 255, 255), \
+                    (ALTO//2-50, ANCHO//2-130))
+            if len(top):
+                m = -100
+                for t in top:
+                    self.statusFont("%s" % t[0],\
+                    (0, 255, 255), (ALTO//2-50, ANCHO//2+m))
+                    self.statusFont("%d" % t[1],\
+                    (0, 255, 255), (ALTO//2+150, ANCHO//2+m))
+                    m += 25
         
-        self.statusFont("Nombre      Puntos", (0, 255, 255), \
-                (ALTO//2-50, ANCHO//2-130))
-        if len(top):
-            m = -100
-            for t in top:
-                self.statusFont("%s" % t[0],\
-                (0, 255, 255), (ALTO//2-50, ANCHO//2+m))
-                self.statusFont("%d" % t[1],\
-                (0, 255, 255), (ALTO//2+150, ANCHO//2+m))
-                m += 25
-    
     def menu(self):
         self.Ventana.blit(self.blur(self.Fondo, 10.0), (0, 0))
         self.Ventana.blit(self.BD, (130, 20))
